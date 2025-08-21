@@ -15,6 +15,14 @@ code {
 }
 
 /* Custom styles for the delivery management system */
+.ant-layout-sider {
+  box-shadow: 2px 0 8px 0 rgba(29,35,41,.05);
+}
+
+.ant-layout-header {
+  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+}
+
 .ant-card {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
@@ -29,13 +37,14 @@ code {
   font-weight: 600;
 }
 
-/* Ensure proper layout behavior */
-.ant-layout {
-  background: #f0f2f5;
-}
-
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
+  .ant-layout-sider {
+    position: fixed;
+    height: 100vh;
+    z-index: 999;
+  }
+  
   .ant-layout-content {
     margin-left: 0 !important;
   }

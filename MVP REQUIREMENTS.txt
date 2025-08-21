@@ -1,0 +1,473 @@
+Clearing Agent Web App – Software Requirements Specification (SRS)
+Version: 1.0
+ Date: 2025-08-16
+ Author: Ororo Solutions
+
+1. Purpose & Scope
+Build a web application for CN Therminal to manage end‑to‑end shipment clearance: client enquiries → document submission → duty & service invoice → client payment → agent payments to shipping/customs → arrival tracking → delivery confirmation. The app will support clients, internal staff, and admins. ETA and (optionally) duty data come from external sources.
+1.1 Goals
+Centralize client intake and documents.
+
+
+Automate ETA retrieval and duty quotation steps (via external API/service or manual entry fallback).
+
+
+Generate and send invoices; collect online/mobile payments.
+
+
+Track shipment status through a clear timeline until delivery.
+
+
+Provide lightweight reporting and exports.
+
+
+1.2 Future Scope
+Payment integration
+Clients portal
+Native mobile apps (responsive web only at MVP).
+
+
+
+2. Actors & Roles
+Staff 1 (Importer/Exporter Engagement): Creates tasks, uploads documents, PoD, tracks status.
+
+
+Staff 2 (Operations/Finance): Validates requests, calculates duty/service charges, issues invoices, records payments to shipping/customs, updates statuses.
+
+
+Admin: Manages users/roles, pricing tables, service fees, integrations, and views reports.
+
+
+
+3. Assumptions & Constraints
+
+
+ETA Source: External API or manual entry if API unavailable.
+
+
+Duty Calculation: Either via external customs/tariff estimator API or internal rules/lookup managed by Admin; final figures are staff‑approved before sending to clients.
+
+
+Payments: Ghana‑friendly gateways (e.g., Paystack, Flutterwave, Hubtel). Support Mobile Money, cards, and bank transfer references.
+
+
+Documents: Uploaded packing list (file), commercial invoice number (text), Ghana Card number, TIN, type of goods.
+
+
+Compliance: Ghana Data Protection Act; secure handling of PII and ID numbers.
+
+
+
+4. High‑Level User Journeys
+Client Enquiry & Submission → staff 1create request/tasks, upload docs, receive tracking ID.
+
+
+Duty/Charges Preparation → staff 2 validate, fetch ETA, compute duty + service, generate invoice.
+
+
+Client Payment → client payment are recorded manually in the system / Payment integration in future
+Agent Payments to Shipping/Customs → staff record outbound payments; lock next steps.
+
+
+Arrival & Clearance → update ETA → arrival → cleared.
+
+
+Delivery → schedule, deliver, capture PoD (proof of delivery), close case.
+
+
+
+5. Functional Requirements
+5.1 Authentication & Access Control
+Email/password and OTP (optional) login for staff and admins; passwordless or OTP for clients (optional).
+
+
+Role‑based access (Staff 1, Staff 2, Admin).
+
+
+Session timeout and logout.
+
+
+5.2 Enquiry/Request Intake (Staff 1)
+Form fields:
+
+
+Commercial Invoice Number (required, text)
+
+
+Packing List (file upload; PDF, DOCX, XLSX, or image)
+
+
+Ghana Card Number (required)
+
+
+TIN (required)
+
+
+Type of Goods (required; dropdown + free text description)
+
+
+Optional: goods value, HS code (if known), origin, destination, weight/volume
+
+
+Auto‑assign Tracking ID and initial status “Submitted”.
+
+
+Staff 1 can view, edit (until staff 2 lock), and withdraw request.
+
+
+5.3 Staff Validation & Data Entry
+View queue of new submissions with flags for missing/invalid data.
+
+
+Validate IDs and documents (checklist); request resubmission if needed.
+
+
+Enter/fetch shipment details: ETA (API/manual), vessel/flight, port, bill of lading/airway bill, container details, HS code, CIF value, etc.
+
+
+Compute duty + taxes + fees using: (a) external API; or (b) internal configurable tariffs & service charges.
+
+
+5.4 Invoicing (to Client)
+Create draft invoice: duty estimate, service fees, disbursements, VAT, other line items.
+
+
+Send invoice to client (email + in‑app)
+Support revisions (versioning) before payment.
+
+
+5.5 Payments (Client → Agent)
+Client pays and payment is recorded
+Generate receipt; attach to request timeline.
+
+
+Partial payments and payment plans (optional, configurable).
+
+
+5.6 Agent Outbound Payments (to Shipping/Customs)
+Record payments: who, purpose (shipping line, terminal, customs duty, port charges), reference, amount, attachment (proof).
+
+
+Prevent moving to next stage until required payments recorded.
+
+
+5.7 Shipment Tracking & Status Flow
+Statuses (state machine):
+Submitted → Under Review → Quoted → Awaiting Client Payment → Paid → Agent Payments In Progress → Arrival Confirmed → Clearing → Cleared → Out for Delivery → Delivered → Closed
+
+
+Allow On Hold and Rejected/Cancelled branches with reasons.
+
+
+Activity log for staff.
+
+
+5.8 Notifications & Messaging
+Email/SMS/in‑app notifications at key events: invoice issued, payment received, arrival, delivery.
+
+
+Staff‑to‑client message thread per request; file attachments allowed.
+
+
+5.9 Reporting & Exports (Lightweight)
+Filterable lists by status, date, client, port.
+
+
+Summaries: total revenue, duties handled, average clearance time.
+
+
+Export CSV/XLSX for accounting.
+
+
+5.10 Admin Settings
+Manage users/roles.
+
+
+Configure service fees, tax/tariff tables (if internal calc), and required attachments.
+
+
+Manage integrations (payment keys, ETA API key) and notification templates.
+
+
+
+6. Non‑Functional Requirements
+Security: HTTPS, input validation, file virus scan (if available from provider), least‑privilege roles.
+
+
+Privacy/Compliance: PII minimization, consent in ToS/Privacy Policy, data retention policy.
+
+
+Availability: 99%+ target; graceful degradation if external APIs fail (manual overrides).
+
+
+Performance: <3s page loads on typical Ghana mobile networks; uploads up to 20MB/file.
+
+
+Usability: Mobile‑first responsive UI; clear progress indicators.
+
+
+Auditability: Activity logs for create/update/delete and financial actions.
+
+
+Accessibility: WCAG 2.1 AA‑oriented practices.
+
+
+
+7. Detailed User Stories (with Acceptance Criteria)
+7.1 Client
+US‑C‑01 Create Enquiry
+ As a client, I want to submit my shipment details and documents so the agent can process a quote.
+ Given I have been given an enquiry form, when I provide commercial invoice number, Ghana Card, TIN, type of goods, and upload packing list, then I receive a message that my docs are submitted.
+
+
+US‑C‑02 View Status & Timeline
+ Given my request exists, 
+
+
+7.2 Staff 2
+US‑S‑01 Validate Submission
+ Given a new request, when I review details and files, then I can mark it “Under Review”, request changes, or reject with reason.
+
+
+US‑S‑02 Fetch/Enter ETA
+ Given a valid request, when I fetch ETA via external API or enter it manually, then ETA displays on client timeline.
+
+
+US‑S‑03 Compute Charges
+ Given validated data, when I compute duty and service fees, then I can create a draft invoice for documentation.
+.
+
+
+US‑S‑05 Update Status & Notes
+ Given shipment progress, when I update statuses and add notes, then clients receive notifications.
+
+
+7.3 Admin
+US‑A‑01 Manage Users & Roles
+ Given I am admin, when I add/edit/disable users, then access reflects assigned roles.
+
+
+US‑A‑02 Configure Fees & Integrations
+ Given I have settings access, when I update service fees, tariff tables, payment and ETA keys, then changes apply to new quotations.
+
+
+US‑A‑03 View Reports
+ Given operations ongoing, when I view dashboards, then I see KPIs like revenue, average clearance time, and pending counts.
+
+
+
+8. Data Elements (Field Catalog)
+(Storage mechanism intentionally abstracted; validations apply at UI/API level.)
+Client Profile: Name, phone, email, company (optional), address.
+
+
+Request: Tracking ID, submitted date, status, commercial invoice number, Ghana Card number, TIN, type of goods, goods description, value, HS code (optional), weight/volume, origin/destination, attachments (packing list + others), ETA, vessel/flight, BL/AWB.
+
+
+Invoice: Number, line items (duty, service fee, taxes, disbursements), totals, currency (GHS), due date, status.
+
+
+Payments (Inbound): gateway ref, amount, currency, payer, date, status, receipt URL.
+
+
+Payments (Outbound): payee (shipping/customs), purpose, ref/doc, amount, date, attachment.
+
+
+Delivery: scheduled date, driver/partner, PoD attachment, delivery notes.
+
+
+Validations (examples):
+Required fields: commercial invoice number, Ghana Card, TIN, type of goods, packing list.
+
+
+Ghana Card/TIN format: basic presence + length/pattern check; block obvious invalid entries; allow manual override by staff.
+
+
+File types: pdf, docx, xlsx, jpg, png; max 20MB.
+
+
+
+9. Status & Workflow Rules
+Only Staff/Admin can move requests forward or backward (with reason).
+
+
+“Quoted” requires completed duty/fees; “Awaiting Client Payment” requires invoice issued.
+
+
+
+“Cleared” requires outbound payment records and clearance confirmation doc.
+
+
+“Delivered” requires PoD.
+
+
+
+10. Integrations
+ETA API: REST GET by BL/AWB/Container; fallback to manual entry.
+
+
+
+Email/SMS: SendGrid and SMS provider (Hubtel/Twilio) for notifications.
+
+
+File Storage: Provider bucket for uploads (S3/Cloudinary/Drive), with access‑controlled links.
+
+
+
+11. API (High‑Level, DB‑Agnostic)
+(Endpoints describe behavior; persistence layer is implementation‑dependent.)
+POST /auth/login – staff/admin login.
+
+
+POST /public/enquiries – create client request (+ files via multipart).
+
+
+GET /me/enquiries/:id – client view status & timeline.
+
+
+POST /staff/enquiries/:id/validate – mark under review / request changes.
+
+
+POST /staff/enquiries/:id/eta – fetch/set ETA.
+
+
+POST /staff/enquiries/:id/quote – compute & attach quote.
+
+
+POST /staff/enquiries/:id/invoices – create/send invoice.
+
+
+POST /payments/webhook – handle gateway callbacks.
+
+
+POST /staff/enquiries/:id/outbound-payments – record agent payments.
+
+
+POST /staff/enquiries/:id/status – transition status (with reason).
+
+
+POST /staff/enquiries/:id/delivery – set delivery & upload PoD.
+
+
+GET /admin/reports – KPIs & exports.
+
+
+
+12. Screens & UI
+Staff 1: Home/Start Enquiry, Upload Docs, My Requests (list/detail), Invoice/Pay, Messages, Receipts.
+
+
+Staff 2: Dashboard (queues), Request Detail (tabs: Overview, Docs, Charges, Payments, Timeline, Messages), Invoicing, Outbound Payments, Delivery.
+
+
+Admin: Users/Roles, Fees & Tariffs, Integrations, Reports.
+
+
+UI Conventions: stepper/timeline component; badges for status; toast notifications; responsive forms with validation hints; progress for uploads.
+
+13. Reporting & KPIs
+Operational: Requests by status, avg time per stage, ageing queue.
+
+
+Financial: Inbound payments by period, outbound by category, margin per job.
+
+
+Customer: Payment success rate, repeat clients.
+
+
+Exports: CSV/XLSX for accounting.
+
+14. Security & Compliance Details
+HTTPS everywhere, HSTS, secure cookies, CSRF protection.
+
+
+PII encryption at rest (if provider supports) and in transit.
+
+
+Access logs; audit trail for financial/status actions.
+
+
+Consent screens for document & ID processing; retention policy.
+
+
+
+15. Error Handling & Fallbacks
+External API failures → notify staff, allow manual override, log incident.
+
+
+Payment pending/failed → retry advice, manual reconciliation flow.
+
+
+File upload errors → resumable uploads if supported; clear size/type messages.
+
+
+
+16. Acceptance Criteria (MVP)
+Client can submit required fields and upload packing list; receives tracking ID.
+
+
+Staff can validate, set ETA, compute charges, and issue invoice.
+
+
+Staff can record outbound payments and advance status to Cleared.
+
+
+Delivery can be scheduled and PoD attached; status Delivered/Closed.
+
+
+Email/SMS notifications trigger at major milestones.
+
+
+Admin can configure fees/integrations and view basic reports.
+
+
+
+
+17. Risks & Mitigations
+External dependency downtime: Provide manual entry overrides; cache last known values.
+
+
+Payment reconciliation mismatches: Dedicated reconciliation screen; daily export.
+
+
+PII exposure via shared links: Use expiring URLs and role‑based checks.
+
+
+
+19. Future Enhancements (Post‑MVP)
+Native mobile apps.
+
+Payment integration
+
+Client portal to submit request
+
+
+Deeper customs system integration (automated HS code & duty calc).
+
+
+Client self‑service quotation estimator.
+
+
+SLA timers and escalations.
+
+
+Driver app for delivery with live location & e‑signature.
+
+
+
+20. Glossary
+ETA: Estimated Time of Arrival.
+
+
+BL/AWB: Bill of Lading / Air Waybill.
+
+
+HS Code: Harmonized System code for goods classification.
+
+
+PoD: Proof of Delivery.
+
+
+
+End of SRS
+
