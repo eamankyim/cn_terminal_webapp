@@ -18,7 +18,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postinstall": "npm run build"
   },
   "eslintConfig": {
     "extends": [
@@ -41,5 +42,9 @@
   "devDependencies": {
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }

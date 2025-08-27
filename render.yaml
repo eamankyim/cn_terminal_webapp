@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: cn-terminal-webapp
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CI
+        value: false
+    buildFilter:
+      paths:
+        - src/**
+        - public/**
+        - package.json
+        - package-lock.json
