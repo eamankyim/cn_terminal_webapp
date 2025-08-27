@@ -9,7 +9,8 @@ import {
   Typography, 
   Tag, 
   Space,
-  Statistic
+  Statistic,
+  Empty
 } from 'antd';
 import { 
   BarChartOutlined,
@@ -146,6 +147,31 @@ const ReportsPage = () => {
             ]}
             pagination={false}
             size="small"
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={
+                    <div>
+                      <Text type="secondary" style={{ fontSize: '14px', marginBottom: '4px' }}>
+                        No reports generated yet
+                      </Text>
+                      <Text type="secondary" style={{ fontSize: '12px' }}>
+                        Generate your first report to get started
+                      </Text>
+                    </div>
+                  }
+                >
+                  <Button 
+                    type="primary" 
+                    icon={<PlusOutlined />}
+                    size="small"
+                  >
+                    Generate Report
+                  </Button>
+                </Empty>
+              )
+            }}
           />
         </div>
       ),

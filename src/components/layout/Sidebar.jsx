@@ -13,7 +13,7 @@ import {
   ContainerOutlined,
   FileTextOutlined,
   CheckCircleOutlined,
-  CarOutlined,
+
   CalculatorOutlined,
   CreditCardOutlined,
   GlobalOutlined,
@@ -39,7 +39,7 @@ const Sidebar = ({ collapsed }) => {
     {
       key: '/enquiries',
       icon: <FileAddOutlined />,
-      label: 'Enquiries',
+      label: 'Jobs',
     },
     {
       key: '/shipments',
@@ -71,11 +71,7 @@ const Sidebar = ({ collapsed }) => {
       icon: <SearchOutlined />,
       label: 'Tracking',
     },
-    {
-      key: '/delivery',
-      icon: <CarOutlined />,
-      label: 'Delivery',
-    },
+
     {
       key: '/reports',
       icon: <BarChartOutlined />,
@@ -84,7 +80,7 @@ const Sidebar = ({ collapsed }) => {
     {
       key: '/admin',
       icon: <SettingOutlined />,
-      label: 'Admin',
+      label: 'Settings',
     },
   ];
 
@@ -101,7 +97,7 @@ const Sidebar = ({ collapsed }) => {
         <div className="sidebar-logo">
           {collapsed ? (
             <img 
-              src="/AppLogo.png" 
+              src="/cn_logo.png" 
               alt="CN Terminal" 
               style={{ 
                 width: '32px', 
@@ -113,7 +109,7 @@ const Sidebar = ({ collapsed }) => {
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <img 
-                src="/AppLogo.png" 
+                src="/cn_logo.png" 
                 alt="CN Terminal" 
                 style={{ 
                   width: '40px', 

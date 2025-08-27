@@ -55,13 +55,49 @@ const LoginPage = () => {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: '#001529',
+      background: '#00072D',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '20px'
     }}>
       <Row justify="center" style={{ width: '100%' }}>
+        {/* Logo and Brand - Outside the form */}
+        <Col xs={24} style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '16px',
+            marginBottom: '16px'
+          }}>
+            <img 
+              src="/cn_logo.png" 
+              alt="CN Terminal" 
+              style={{ 
+                width: '64px', 
+                height: '64px',
+                objectFit: 'cover',
+                borderRadius: '8px'
+              }} 
+            />
+            <span style={{ 
+              fontSize: '36px', 
+              fontWeight: 'bold',
+              color: '#ffffff'
+            }}>
+              CN Terminal
+            </span>
+          </div>
+          <Title level={3} style={{ color: '#ffffff', fontWeight: 'normal', margin: 0, opacity: 0.9 }}>
+            Internal Access Portal
+          </Title>
+          <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '16px' }}>
+            Sign in with your company credentials
+          </Text>
+        </Col>
+        
+        {/* Login Form Card */}
         <Col xs={24} sm={20} md={16} lg={12} xl={8}>
           <Card 
             style={{ 
@@ -71,38 +107,13 @@ const LoginPage = () => {
               backgroundColor: 'rgba(255, 255, 255, 0.95)'
             }}
           >
-            {/* Header */}
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                gap: '16px',
-                marginBottom: '16px'
-              }}>
-                <img 
-                  src="/AppLogo.png" 
-                  alt="ShipEASE" 
-                  style={{ 
-                    width: '48px', 
-                    height: '48px',
-                    objectFit: 'cover',
-                    borderRadius: '6px'
-                  }} 
-                />
-                <span style={{ 
-                  fontSize: '32px', 
-                  fontWeight: 'bold',
-                  color: '#ff9800'
-                }}>
-                  CN Terminal
-                </span>
-              </div>
-              <Title level={3} style={{ color: '#666', fontWeight: 'normal', margin: 0 }}>
-                Internal Access Portal
+            {/* Form Header */}
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <Title level={4} style={{ color: '#333', fontWeight: '600', margin: 0 }}>
+                Sign In
               </Title>
-              <Text type="secondary" style={{ fontSize: '16px' }}>
-                Sign in with your company credentials
+              <Text type="secondary" style={{ fontSize: '14px' }}>
+                Enter your credentials to continue
               </Text>
             </div>
 

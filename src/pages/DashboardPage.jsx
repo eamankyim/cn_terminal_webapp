@@ -12,7 +12,8 @@ import {
   Timeline,
   Avatar,
   Progress,
-  Badge
+  Badge,
+  Empty
 } from 'antd';
 import { 
   FileAddOutlined, 
@@ -43,7 +44,7 @@ const DashboardPage = () => {
   // Mock data for clearing agent statistics
   const stats = [
     {
-      title: 'Total Enquiries',
+      title: 'Total Jobs',
       value: 156,
       prefix: <FileAddOutlined />,
       color: '#1890ff',
@@ -114,7 +115,7 @@ const DashboardPage = () => {
   // Mock data for workflow status counts
   const workflowStatuses = [
     { status: 'Submitted', count: 25, color: '#1890ff', icon: <FileAddOutlined /> },
-    { status: 'Under Review', count: 18, color: '#faad14', icon: <ClockCircleOutlined /> },
+    { status: 'Under Review', count: 18, color: '#00072D', icon: <ClockCircleOutlined /> },
     { status: 'Quoted', count: 32, color: '#722ed1', icon: <CalculatorOutlined /> },
     { status: 'Awaiting Payment', count: 15, color: '#eb2f96', icon: <CreditCardOutlined /> },
     { status: 'Clearing', count: 12, color: '#52c41a', icon: <SyncOutlined /> },
@@ -158,7 +159,7 @@ const DashboardPage = () => {
       'Paid': 'green',
       'Clearing': 'green',
       'Cleared': 'green',
-      'Out for Delivery': 'cyan',
+
       'Delivered': 'green',
       'Closed': 'default'
     };
@@ -174,7 +175,7 @@ const DashboardPage = () => {
       'Paid': <CheckCircleOutlined />,
       'Clearing': <SyncOutlined />,
       'Cleared': <CheckCircleOutlined />,
-      'Out for Delivery': <CarOutlined />,
+
       'Delivered': <CheckCircleFilled />,
       'Closed': <CheckCircleFilled />
     };
@@ -226,7 +227,7 @@ const DashboardPage = () => {
           <Button 
             type="text" 
             icon={<EyeOutlined />} 
-            size="small"
+            size="small" 
             onClick={() => navigate(`/shipments/${record.trackingId}`)}
           >
             View
@@ -240,7 +241,7 @@ const DashboardPage = () => {
     const icons = {
       'invoice': <FileTextOutlined style={{ color: '#1890ff' }} />,
       'eta': <GlobalOutlined style={{ color: '#52c41a' }} />,
-      'enquiry': <FileAddOutlined style={{ color: '#faad14' }} />,
+      'enquiry': <FileAddOutlined style={{ color: '#00072D' }} />,
       'payment': <CreditCardOutlined style={{ color: '#52c41a' }} />
     };
     return icons[type] || <FileAddOutlined />;
@@ -281,16 +282,33 @@ const DashboardPage = () => {
                 icon={<PlusOutlined />}
                 onClick={() => navigate('/enquiries')}
               >
-                New Enquiry
+                New Job
               </Button>
             }
             style={{ marginBottom: '16px' }}
           >
-            <Table 
+            <Table
               dataSource={recentShipments} 
               columns={shipmentColumns} 
               pagination={false}
               size="small"
+              locale={{
+                emptyText: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description={
+                      <div>
+                        <Text type="secondary" style={{ fontSize: '14px', marginBottom: '4px' }}>
+                          No recent shipments
+                        </Text>
+                        <Text type="secondary" style={{ fontSize: '12px' }}>
+                          Shipments will appear here as they are processed
+                        </Text>
+                      </div>
+                    }
+                  />
+                )
+              }}
             />
           </Card>
         </Col>

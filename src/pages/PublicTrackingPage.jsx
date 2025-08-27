@@ -140,8 +140,8 @@ const PublicTrackingPage = () => {
           {/* Header with Logo */}
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <img 
-              src="/AppLogo.png" 
-              alt="ShipEASE" 
+              src="/cn_logo.png" 
+              alt="CN Terminal" 
               style={{ 
                 width: '120px', 
                 height: 'auto',

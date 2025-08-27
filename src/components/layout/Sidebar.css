@@ -5,6 +5,7 @@
   height: 100vh;
   z-index: 1000;
   overflow: hidden;
+  background-color: #00072D !important;
 }
 
 .sidebar-container {
@@ -42,11 +43,15 @@
 }
 
 .sidebar-menu .ant-menu-item-selected {
-  background-color: #ff9800 !important;
+  background-color: #2FA2EE !important;
 }
 
 .sidebar-menu .ant-menu-item-selected:hover {
-  background-color: #f57c00 !important;
+  background-color: #2FA2EE !important;
+}
+
+.sidebar-menu .ant-menu-item-selected::after {
+  border-right-color: #00072D !important;
 }
 
 /* Responsive adjustments */

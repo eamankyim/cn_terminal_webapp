@@ -56,19 +56,7 @@ export const AuthProvider = ({ children }) => {
       invitedAt: '2024-01-03',
       onboardedAt: '2024-01-04'
     },
-    {
-      id: 4,
-      email: 'delivery@cnterminal.com',
-      password: 'delivery123',
-      name: 'Mike Delivery',
-      role: 'delivery',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=delivery',
-      permissions: ['delivery-scheduling', 'pod-upload', 'delivery-tracking'],
-      status: 'active',
-      invitedBy: 'admin@cnterminal.com',
-      invitedAt: '2024-01-02',
-      onboardedAt: '2024-01-03'
-    },
+
     {
       id: 5,
       email: 'finance@cnterminal.com',
@@ -248,8 +236,7 @@ export const AuthProvider = ({ children }) => {
         return ['enquiry-management', 'document-upload', 'client-communication'];
       case 'staff2':
         return ['validation', 'duty-calculation', 'invoicing', 'payment-tracking'];
-      case 'delivery':
-        return ['delivery-scheduling', 'pod-upload', 'delivery-tracking'];
+
       case 'finance':
         return ['financial-reports', 'payment-reconciliation', 'cost-analysis'];
       default:

@@ -352,7 +352,7 @@ const EnquiriesPage = () => {
               title="Pending Review"
               value={enquiries.filter(e => e.status === 'Submitted').length}
               prefix={<CalendarOutlined />}
-              valueStyle={{ color: '#faad14' }}
+              valueStyle={{ color: '#00072D' }}
             />
           </Card>
         </Col>

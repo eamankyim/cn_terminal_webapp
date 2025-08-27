@@ -112,7 +112,7 @@ const MainLayout = () => {
                   >
                     {currentUser?.avatar ? undefined : getUserInitials(currentUser?.name)}
                   </Avatar>
-                  <span style={{ color: '#fff', fontWeight: 500 }}>
+                  <span style={{ color: '#000', fontWeight: 500 }}>
                     {currentUser?.name || 'User'}
                   </span>
                 </Space>

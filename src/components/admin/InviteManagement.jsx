@@ -39,7 +39,7 @@ const InviteManagement = () => {
   const roleOptions = [
     { value: 'driver', label: 'Driver', description: 'Collection and delivery operations' },
     { value: 'warehouse', label: 'Warehouse Staff', description: 'Inventory and storage management' },
-    { value: 'delivery-agent', label: 'Delivery Agent', description: 'Final mile delivery' },
+
     { value: 'finance', label: 'Finance Staff', description: 'Billing and payment management' },
     { value: 'customer-service', label: 'Customer Service', description: 'Customer support and tracking' },
     { value: 'admin', label: 'Administrator', description: 'Full system access' }

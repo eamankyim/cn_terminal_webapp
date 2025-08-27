@@ -8,7 +8,7 @@ import JobsPage from './pages/JobsPage';
 import ShipmentTrackingPage from './pages/ShipmentTrackingPage';
 import DriverDashboardPage from './pages/DriverDashboardPage';
 import WarehouseDashboardPage from './pages/WarehouseDashboardPage';
-import DeliveryAgentDashboardPage from './pages/DeliveryAgentDashboardPage';
+
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import './App.css';
 
@@ -36,7 +36,7 @@ function App() {
               <Route path="track-shipment" element={<ShipmentTrackingPage />} />
               <Route path="driver" element={<DriverDashboardPage />} />
               <Route path="warehouse" element={<WarehouseDashboardPage />} />
-              <Route path="delivery-agent" element={<DeliveryAgentDashboardPage />} />
+
               <Route path="admin" element={<AdminDashboardPage />} />
             </Route>
           </Routes>

@@ -98,19 +98,7 @@ const AdminDashboardPage = () => {
       joinedDate: '2024-01-04',
       lastLogin: '2024-01-21 09:45'
     },
-    {
-      key: '4',
-      id: 4,
-      name: 'Mike Delivery',
-      email: 'delivery@shipease.com',
-      role: 'delivery-agent',
-      status: 'active',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=delivery',
-      phone: '+44 20 1234 5681',
-      department: 'Operations',
-      joinedDate: '2024-01-03',
-      lastLogin: '2024-01-21 11:20'
-    }
+
   ]);
 
   const userColumns = [
@@ -148,7 +136,7 @@ const AdminDashboardPage = () => {
           admin: 'red',
           driver: 'blue',
           warehouse: 'green',
-          'delivery-agent': 'orange',
+
           finance: 'purple',
           'customer-service': 'cyan'
         };

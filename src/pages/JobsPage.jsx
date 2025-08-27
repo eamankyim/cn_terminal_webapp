@@ -1,481 +1,374 @@
 import React, { useState } from 'react';
 import { 
-  Table, 
+  Card, 
+  Row, 
+  Col, 
   Button, 
+  Table, 
+  Tag, 
+  Space, 
+  Typography,
   Modal, 
   Form, 
   Input, 
-  Select, 
-  DatePicker, 
-  InputNumber, 
-  Switch, 
   Upload, 
-  Space, 
-  Tag, 
-  Typography,
-  Row,
-  Col,
-  Card,
+  Select,
+  message,
+  Tooltip,
   Statistic,
   Drawer,
+  Tabs,
   Timeline,
   Descriptions,
-  Divider,
-  Progress,
   Avatar,
-  Tabs,
+  Divider,
   Dropdown,
-  message
+  Empty
 } from 'antd';
 import { 
   PlusOutlined, 
-  SearchOutlined, 
-  FilterOutlined,
+  UploadOutlined,
   EyeOutlined,
   EditOutlined,
   DeleteOutlined,
-  UploadOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CarOutlined,
+  FileTextOutlined,
   UserOutlined,
-  EnvironmentOutlined,
+  ContainerOutlined,
   CalendarOutlined,
   DollarOutlined,
-  DownOutlined,
-  SettingOutlined
+  MoreOutlined,
+  DownloadOutlined,
+  ShareAltOutlined,
+  ClockCircleOutlined,
+  CheckCircleOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
+const { TabPane } = Tabs;
 
 const JobsPage = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isDetailsDrawerVisible, setIsDetailsDrawerVisible] = useState(false);
-  const [isStatusUpdateModalVisible, setIsStatusUpdateModalVisible] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [form] = Form.useForm();
-  const [statusUpdateForm] = Form.useForm();
   const navigate = useNavigate();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingJob, setEditingJob] = useState(null);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [isDetailsDrawerVisible, setIsDetailsDrawerVisible] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [isStatusUpdateModalVisible, setIsStatusUpdateModalVisible] = useState(false);
+  const [statusUpdateForm] = Form.useForm();
+  const [isDocumentViewerVisible, setIsDocumentViewerVisible] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
   // Mock data for jobs
-  const jobs = [
+  const [jobs, setJobs] = useState([
     {
       key: '1',
-      jobId: 'SE001234',
-      customer: 'John Smith',
-      customerEmail: 'john.smith@email.com',
-      customerPhone: '+44 7911 123456',
-      pickupAddress: '123 Main St, London',
-      deliveryAddress: '456 Oak Ave, Accra, Ghana',
-      status: 'In Progress',
-      priority: 'High',
-      assignedTo: 'Driver A',
-      createdAt: '2024-01-20',
-      eta: '2024-01-25',
-      value: 1500,
-      packageType: 'Box',
-      weight: '2.5 kg',
-      progress: 75,
-             timeline: [
-         {
-           time: '2024-01-20 14:30',
-           event: 'Job created',
-           location: 'London, UK',
-           status: 'completed',
-           icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
-         },
-         {
-           time: '2024-01-21 09:15',
-           event: 'Assigned to driver',
-           location: 'London',
-           status: 'completed',
-           icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
-         },
-         {
-           time: '2024-01-22 16:45',
-           event: 'Pickup completed',
-           location: 'London',
-           status: 'completed',
-           icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
-         },
-         {
-           time: '2024-01-23 08:30',
-           event: 'In transit to Ghana',
-           location: 'En route',
-           status: 'in-progress',
-           icon: <CarOutlined style={{ color: '#1890ff' }} />
-         },
-         {
-           time: '2024-01-25 10:00',
-           event: 'Expected delivery',
-           location: 'Accra, Ghana',
-           status: 'pending',
-           icon: <ClockCircleOutlined style={{ color: '#faad14' }} />
-         }
-       ],
-       activities: [
-         {
-           time: '2024-01-20 14:30',
-           user: 'John Doe',
-           action: 'created the job',
-           details: 'Job SE001234 created for John Smith'
-         },
-         {
-           time: '2024-01-21 09:15',
-           user: 'Sarah Manager',
-           action: 'assigned driver',
-           details: 'Assigned to Driver A'
-         },
-         {
-           time: '2024-01-22 16:45',
-           user: 'Driver A',
-           action: 'updated status',
-           details: 'Status changed to "Pickup completed"'
-         },
-         {
-           time: '2024-01-23 08:30',
-           user: 'Warehouse Staff',
-           action: 'updated status',
-           details: 'Status changed to "In transit to Ghana"'
-                  }
-       ],
-       activities: [
-         {
-           time: '2024-01-19 10:00',
-           user: 'John Doe',
-           action: 'created the job',
-           details: 'Job SE001235 created for Sarah Johnson'
-         },
-         {
-           time: '2024-01-20 14:30',
-           user: 'Driver B',
-           action: 'updated status',
-           details: 'Status changed to "Pickup completed"'
-         },
-         {
-           time: '2024-01-22 16:00',
-           user: 'Driver B',
-           action: 'updated status',
-           details: 'Status changed to "Delivered successfully"'
+      trackingId: 'CN001',
+      clientName: 'John Smith',
+      clientEmail: 'john@example.com',
+      clientPhone: '+233 24 123 4567',
+      commercialInvoice: 'INV-2024-001',
+      goodsType: 'Electronics',
+      
+      ghanaCard: 'GHA-123456789-0',
+      tin: '123456789',
+            status: 'Submitted',
+      submittedDate: '2024-01-20',
+      createdBy: 'Staff 1',
+      documents: [
+        'packing-list.pdf',
+        'commercial-invoice.pdf',
+        'bill-of-lading.pdf',
+        'certificate-of-origin.pdf'
+      ],
+      estimatedValue: 5000,
+      port: 'Tema Port',
+      assignedTo: 'Unassigned',
+      statusHistory: [
+        {
+          date: '2024-01-20',
+          status: 'Submitted',
+          comment: 'Job created',
+          updatedBy: 'Staff 1'
          }
        ]
      },
      {
        key: '2',
-      jobId: 'SE001235',
-      customer: 'Sarah Johnson',
-      customerEmail: 'sarah.johnson@email.com',
-      customerPhone: '+44 7911 234567',
-      pickupAddress: '789 Park Rd, Manchester',
-      deliveryAddress: '321 Pine St, Kumasi, Ghana',
-      status: 'Completed',
-      priority: 'Medium',
-      assignedTo: 'Driver B',
-      createdAt: '2024-01-19',
-      eta: '2024-01-24',
-      value: 800,
-      packageType: 'Document',
-      weight: '0.5 kg',
-      progress: 100,
-      timeline: [
+      trackingId: 'CN002',
+      clientName: 'Sarah Johnson',
+      clientEmail: 'sarah@example.com',
+      clientPhone: '+233 26 987 6543',
+      commercialInvoice: 'INV-2024-002',
+      goodsType: 'Textiles',
+      
+      ghanaCard: 'GHA-987654321-0',
+      tin: '987654321',
+      status: 'Under Review',
+      submittedDate: '2024-01-19',
+      createdBy: 'Staff 1',
+      documents: [
+        'packing-list.pdf',
+        'commercial-invoice.pdf',
+        'technical-specifications.pdf',
+        'quality-certificate.pdf',
+        'shipping-manifest.pdf'
+      ],
+      estimatedValue: 3000,
+      port: 'Kotoka Airport',
+      assignedTo: 'Staff 1',
+      statusHistory: [
         {
-          time: '2024-01-19 10:00',
-          event: 'Job created',
-          location: 'Manchester, UK',
-          status: 'completed',
-          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
+          date: '2024-01-19',
+          status: 'Submitted',
+          comment: 'Job created',
+          updatedBy: 'Staff 1'
         },
         {
-          time: '2024-01-20 14:30',
-          event: 'Pickup completed',
-          location: 'Manchester',
-          status: 'completed',
-          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
-        },
-        {
-          time: '2024-01-22 16:00',
-          event: 'Delivered successfully',
-          location: 'Kumasi, Ghana',
-          status: 'completed',
-          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
-                 }
-       ],
-       activities: [
-         {
-           time: '2024-01-21 11:00',
-           user: 'John Doe',
-           action: 'created the job',
-           details: 'Job SE001236 created for Mike Wilson'
-         },
-         {
-           time: '2024-01-22 09:00',
-           user: 'System',
-           action: 'status update',
-           details: 'Status remains "Pending" - awaiting driver assignment'
+          date: '2024-01-20',
+          status: 'Under Review',
+          comment: 'Documents reviewed and approved',
+          updatedBy: 'Staff 2'
          }
        ]
      },
      {
        key: '3',
-      jobId: 'SE001236',
-      customer: 'Mike Wilson',
-      customerEmail: 'mike.wilson@email.com',
-      customerPhone: '+44 7911 345678',
-      pickupAddress: '456 High St, Birmingham',
-      deliveryAddress: '654 Elm St, Tamale, Ghana',
-      status: 'Pending',
-      priority: 'Low',
-      assignedTo: 'Unassigned',
-      createdAt: '2024-01-21',
-      eta: '2024-01-26',
-      value: 1200,
-      packageType: 'Parcel',
-      weight: '1.8 kg',
-      progress: 0,
-      timeline: [
+      trackingId: 'CN003',
+      clientName: 'Mike Wilson',
+      clientEmail: 'mike@example.com',
+      clientPhone: '+233 20 555 1234',
+      commercialInvoice: 'INV-2024-003',
+      goodsType: 'Machinery',
+      
+      ghanaCard: 'GHA-555123456-0',
+      tin: '555123456',
+      status: 'Quoted',
+      submittedDate: '2024-01-18',
+      createdBy: 'Staff 1',
+      documents: [
+        'packing-list.pdf',
+        'commercial-invoice.pdf',
+        'technical-specifications.pdf',
+        'safety-certificate.pdf',
+        'inspection-report.pdf',
+        'warranty-document.pdf'
+      ],
+      estimatedValue: 15000,
+      port: 'Tema Port',
+      assignedTo: 'Staff 2',
+      statusHistory: [
         {
-          time: '2024-01-21 11:00',
-          event: 'Job created',
-          location: 'Birmingham, UK',
-          status: 'completed',
-          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
+          date: '2024-01-18',
+          status: 'Submitted',
+          comment: 'Job created',
+          updatedBy: 'Staff 1'
         },
         {
-          time: '2024-01-22 09:00',
-          event: 'Awaiting driver assignment',
-          location: 'Birmingham',
-          status: 'pending',
-          icon: <ClockCircleOutlined style={{ color: '#faad14' }} />
+          date: '2024-01-19',
+          status: 'Under Review',
+          comment: 'Initial review completed',
+          updatedBy: 'Staff 2'
+        },
+        {
+          date: '2024-01-20',
+          status: 'Quoted',
+          comment: 'Duty calculation completed and quote prepared',
+          updatedBy: 'Staff 2'
         }
       ]
-    },
-    {
-      key: '4',
-      jobId: 'SE001237',
-      customer: 'Lisa Brown',
-      customerEmail: 'lisa.brown@email.com',
-      customerPhone: '+44 7911 456789',
-      pickupAddress: '789 Queen St, Liverpool',
-      deliveryAddress: '987 Maple Ave, Cape Coast, Ghana',
-      status: 'In Transit',
-      priority: 'High',
-      assignedTo: 'Driver C',
-      createdAt: '2024-01-18',
-      eta: '2024-01-23',
-      value: 2000,
-      packageType: 'Fragile',
-      weight: '3.2 kg',
-      progress: 60,
-      timeline: [
-        {
-          time: '2024-01-18 08:00',
-          event: 'Job created',
-          location: 'Liverpool, UK',
-          status: 'completed',
-          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
-        },
-        {
-          time: '2024-01-19 15:30',
-          event: 'Pickup completed',
-          location: 'Liverpool',
-          status: 'completed',
-          icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
-        },
-        {
-          time: '2024-01-20 12:00',
-          event: 'In transit to Ghana',
-          location: 'En route',
-          status: 'in-progress',
-          icon: <CarOutlined style={{ color: '#1890ff' }} />
-        },
-        {
-          time: '2024-01-23 10:00',
-          event: 'Expected delivery',
-          location: 'Cape Coast, Ghana',
-          status: 'pending',
-          icon: <ClockCircleOutlined style={{ color: '#faad14' }} />
-                 }
-       ],
-       activities: [
-         {
-           time: '2024-01-18 08:00',
-           user: 'John Doe',
-           action: 'created the job',
-           details: 'Job SE001237 created for Lisa Brown'
-         },
-         {
-           time: '2024-01-19 15:30',
-           user: 'Driver C',
-           action: 'updated status',
-           details: 'Status changed to "Pickup completed"'
-         },
-         {
-           time: '2024-01-20 12:00',
-           user: 'Warehouse Staff',
-           action: 'updated status',
-           details: 'Status changed to "In transit to Ghana"'
-         }
-       ]
-     },
-   ];
-
-  // Helper functions for colors
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'In Progress':
-        return 'processing';
-      case 'Completed':
-        return 'success';
-      case 'Pending':
-        return 'warning';
-      case 'In Transit':
-        return 'processing';
-      default:
-        return 'default';
     }
-  };
+  ]);
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'High':
-        return 'error';
-      case 'Medium':
-        return 'warning';
-      case 'Low':
-        return 'default';
-      default:
-        return 'default';
-    }
-  };
-
-  // Job statistics
-  const stats = [
-    { title: 'Total Jobs', value: 1247, color: '#1890ff' },
-    { title: 'In Progress', value: 89, color: '#faad14' },
-    { title: 'Completed', value: 1056, color: '#52c41a' },
-    { title: 'Pending', value: 102, color: '#f5222d' },
+  // Available staff members for assignment
+  const staffMembers = [
+    'Unassigned',
+    'Staff 1',
+    'Staff 2',
+    'Admin',
+    'Delivery Team'
   ];
+
+  const getStatusColor = (status) => {
+    const statusColors = {
+      'Submitted': 'blue',
+      'Under Review': 'orange',
+      'Quoted': 'purple',
+      'Awaiting Payment': 'magenta',
+      'Paid': 'green',
+      'Clearing': 'green',
+      'Cleared': 'green',
+      'Out for Delivery': 'cyan',
+      'Delivered': 'green',
+      'Closed': 'default'
+    };
+    return statusColors[status] || 'default';
+  };
+
+  const getStatusIcon = (status) => {
+    const statusIcons = {
+      'Submitted': <FileTextOutlined />,
+      'Under Review': <CalendarOutlined />,
+      'Quoted': <DollarOutlined />,
+      'Awaiting Payment': <DollarOutlined />,
+      'Paid': <DollarOutlined />,
+      'Clearing': <ContainerOutlined />,
+      'Cleared': <ContainerOutlined />,
+      'Out for Delivery': <ContainerOutlined />,
+      'Delivered': <ContainerOutlined />,
+      'Closed': <ContainerOutlined />
+    };
+    return statusIcons[status] || <FileTextOutlined />;
+  };
+
+  const getDocumentIcon = (filename) => {
+    const extension = filename.split('.').pop()?.toLowerCase();
+    switch (extension) {
+      case 'pdf':
+        return <FileTextOutlined style={{ color: '#ff4d4f' }} />;
+      case 'doc':
+      case 'docx':
+        return <FileTextOutlined style={{ color: '#1890ff' }} />;
+      case 'xls':
+      case 'xlsx':
+        return <FileTextOutlined style={{ color: '#52c41a' }} />;
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+        return <FileTextOutlined style={{ color: '#722ed1' }} />;
+      default:
+        return <FileTextOutlined style={{ color: '#1890ff' }} />;
+    }
+  };
+
+  const getDocumentTypeLabel = (filename) => {
+    const name = filename.toLowerCase();
+    if (name.includes('packing')) return 'Packing List';
+    if (name.includes('invoice')) return 'Commercial Invoice';
+    if (name.includes('lading')) return 'Bill of Lading';
+    if (name.includes('certificate')) return 'Certificate';
+    if (name.includes('specification')) return 'Technical Specification';
+    if (name.includes('report')) return 'Report';
+    if (name.includes('warranty')) return 'Warranty Document';
+    if (name.includes('manifest')) return 'Shipping Manifest';
+    if (name.includes('safety')) return 'Safety Certificate';
+    if (name.includes('inspection')) return 'Inspection Report';
+    if (name.includes('origin')) return 'Certificate of Origin';
+    return 'Document';
+  };
 
   const columns = [
     {
-      title: 'Job ID',
-      dataIndex: 'jobId',
-      key: 'jobId',
-      render: (text) => <Text strong>{text}</Text>,
+      title: 'Tracking ID',
+      dataIndex: 'trackingId',
+      key: 'trackingId',
+      render: (text) => <Text strong>{text}</Text>
     },
     {
-      title: 'Customer',
-      dataIndex: 'customer',
-      key: 'customer',
+      title: 'Client',
+      dataIndex: 'clientName',
+      key: 'clientName',
+      render: (text, record) => (
+        <Space direction="vertical" size="small">
+          <Text strong>{text}</Text>
+          <Text type="secondary" style={{ fontSize: '12px' }}>
+            {record.clientEmail}
+          </Text>
+        </Space>
+      )
     },
     {
-      title: 'Pickup Address',
-      dataIndex: 'pickupAddress',
-      key: 'pickupAddress',
-      ellipsis: true,
+      title: 'Goods',
+      dataIndex: 'goodsType',
+      key: 'goodsType',
+      render: (text, record) => (
+        <Tag color="blue">{text}</Tag>
+      )
     },
     {
-      title: 'Delivery Address',
-      dataIndex: 'deliveryAddress',
-      key: 'deliveryAddress',
-      ellipsis: true,
+      title: 'Documents',
+      dataIndex: 'documents',
+      key: 'documents',
+      render: (docs) => (
+        <Space>
+          {docs.map((doc, index) => (
+            <Tooltip key={index} title={doc}>
+              <FileTextOutlined style={{ color: '#1890ff' }} />
+            </Tooltip>
+          ))}
+          <Text type="secondary">({docs.length})</Text>
+        </Space>
+      )
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status) => {
-        let color = 'default';
-        switch (status) {
-          case 'In Progress':
-            color = 'processing';
-            break;
-          case 'Completed':
-            color = 'success';
-            break;
-          case 'Pending':
-            color = 'warning';
-            break;
-          case 'In Transit':
-            color = 'processing';
-            break;
-          default:
-            color = 'default';
-        }
-        return <Tag color={color}>{status}</Tag>;
-      },
+      render: (status) => (
+        <Tag color={getStatusColor(status)} icon={getStatusIcon(status)}>
+          {status}
+        </Tag>
+      )
     },
     {
-      title: 'Priority',
-      dataIndex: 'priority',
-      key: 'priority',
-      render: (priority) => {
-        let color = 'default';
-        switch (priority) {
-          case 'High':
-            color = 'error';
-            break;
-          case 'Medium':
-            color = 'warning';
-            break;
-          case 'Low':
-            color = 'default';
-            break;
-          default:
-            color = 'default';
-        }
-        return <Tag color={color}>{priority}</Tag>;
-      },
+      title: 'Submitted',
+      dataIndex: 'submittedDate',
+      key: 'submittedDate'
     },
     {
       title: 'Assigned To',
       dataIndex: 'assignedTo',
       key: 'assignedTo',
-    },
-    {
-      title: 'ETA',
-      dataIndex: 'eta',
-      key: 'eta',
+      render: (assignedTo) => (
+        <Tag 
+          color={assignedTo === 'Unassigned' ? 'default' : 'blue'}
+          icon={assignedTo === 'Unassigned' ? null : <UserOutlined />}
+        >
+          {assignedTo}
+        </Tag>
+      )
     },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
         <Button 
-          size="small"
+          type="text" 
           icon={<EyeOutlined />}
+          size="small"
           onClick={() => handleViewJob(record)}
         >
           View
         </Button>
-      ),
-    },
+      )
+    }
   ];
 
   const handleNewJob = () => {
+    setEditingJob(null);
+    form.resetFields();
     setIsModalVisible(true);
-    form.resetFields();
   };
 
-  const handleModalOk = async () => {
-    try {
-      const values = await form.validateFields();
-      console.log('New job values:', values);
-      // Here you would typically make an API call to create the job
-      setIsModalVisible(false);
-      form.resetFields();
-      // You could add a success message here
-    } catch (error) {
-      console.error('Validation failed:', error);
-    }
-  };
+  const handleEditJob = (job) => {
+    setEditingJob(job);
+    form.setFieldsValue({
+      clientName: job.clientName,
+      clientEmail: job.clientEmail,
+      clientPhone: job.clientPhone,
+      commercialInvoice: job.commercialInvoice,
+      goodsType: job.goodsType,
 
-  const handleModalCancel = () => {
-    setIsModalVisible(false);
-    form.resetFields();
+      ghanaCard: job.ghanaCard,
+      tin: job.tin,
+      estimatedValue: job.estimatedValue,
+      port: job.port
+    });
+    setIsModalVisible(true);
   };
 
   const handleViewJob = (job) => {
@@ -483,157 +376,244 @@ const JobsPage = () => {
     setIsDetailsDrawerVisible(true);
   };
 
-  const handleEditJob = (job) => {
-    // Populate form with job data and open modal
-    form.setFieldsValue({
-      customerName: job.customer,
-      pickupAddress: job.pickupAddress,
-      deliveryAddress: job.deliveryAddress,
-      // Add other fields as needed
-    });
-    setIsModalVisible(true);
-  };
-
   const handleDeleteJob = (job) => {
-    // Add confirmation dialog and delete logic
-    console.log('Delete job:', job.jobId);
+    Modal.confirm({
+      title: 'Delete Job',
+      content: `Are you sure you want to delete job ${job.trackingId}?`,
+      onOk: () => {
+        setJobs(jobs.filter(j => j.key !== job.key));
+        message.success('Job deleted successfully');
+      }
+    });
   };
 
-  const handleStatusUpdate = () => {
-    setIsStatusUpdateModalVisible(true);
-    statusUpdateForm.resetFields();
-  };
-
-  const handleStatusUpdateOk = async () => {
+  const handleSubmit = async (values) => {
+    setLoading(true);
     try {
-      const values = await statusUpdateForm.validateFields();
-      console.log('Status update values:', values);
-      
-      // Here you would typically make an API call to update the job status
-      // and add the activity/comment to the timeline
-      
-      message.success('Job status updated successfully');
-      setIsStatusUpdateModalVisible(false);
-      statusUpdateForm.resetFields();
-      
-      // Close the details drawer to refresh the view
-      setIsDetailsDrawerVisible(false);
-    } catch (error) {
-      console.error('Status update validation failed:', error);
+      if (editingJob) {
+        // Update existing job
+        const updatedJobs = jobs.map(j => 
+          j.key === editingJob.key 
+            ? { ...j, ...values }
+            : j
+        );
+        setJobs(updatedJobs);
+        message.success('Job updated successfully');
+      } else {
+        // Create new job
+        const newJob = {
+          key: Date.now().toString(),
+          trackingId: `CN${String(jobs.length + 1).padStart(3, '0')}`,
+          ...values,
+          status: values.status || 'Submitted',
+          submittedDate: new Date().toISOString().split('T')[0],
+          documents: [],
+          statusHistory: [
+            {
+              date: new Date().toISOString().split('T')[0],
+              status: values.status || 'Submitted',
+              comment: 'Job created',
+              updatedBy: 'Current User'
+            }
+          ]
+        };
+        setJobs([newJob, ...jobs]);
+        message.success('Job created successfully');
+      }
+      setIsModalVisible(false);
+      form.resetFields();
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleStatusUpdateCancel = () => {
-    setIsStatusUpdateModalVisible(false);
-    statusUpdateForm.resetFields();
+  const handleStatusUpdate = async (values) => {
+    setLoading(true);
+    try {
+      const newStatusEntry = {
+        date: new Date().toISOString().split('T')[0],
+        status: values.status,
+        comment: values.comment,
+        updatedBy: 'Current User'
+      };
+
+      const updatedJobs = jobs.map(j => 
+        j.key === selectedJob.key 
+          ? { 
+              ...j, 
+              status: values.status,
+              statusHistory: [...(j.statusHistory || []), newStatusEntry]
+            }
+          : j
+      );
+      setJobs(updatedJobs);
+      message.success('Job status updated successfully');
+      setIsStatusUpdateModalVisible(false);
+      statusUpdateForm.resetFields();
+    } catch (error) {
+      message.error('Failed to update status');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewDocument = (document) => {
+    setSelectedDocument(document);
+    setIsDocumentViewerVisible(true);
+  };
+
+
+
+  const uploadProps = {
+    name: 'file',
+    multiple: true,
+    action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
+    onChange(info) {
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
   };
 
   return (
+    <div style={{ padding: '24px' }}>
+      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
     <div>
-      <div style={{ marginBottom: '24px' }}>
         <Title level={2}>Jobs Management</Title>
-        <Text type="secondary">Manage all delivery jobs and their statuses</Text>
+          <Text type="secondary">Manage client jobs and document submissions</Text>
+        </div>
+        <Button 
+          type="primary" 
+          icon={<PlusOutlined />} 
+          size="large"
+          onClick={handleNewJob}
+        >
+          New Job
+        </Button>
       </div>
 
       {/* Statistics Cards */}
       <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
-        {stats.map((stat, index) => (
-          <Col xs={24} sm={12} lg={6} key={index}>
+        <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
-                title={stat.title}
-                value={stat.value}
-                valueStyle={{ color: stat.color }}
+              title="Total Jobs"
+              value={jobs.length}
+              prefix={<FileTextOutlined />}
+              valueStyle={{ color: '#1890ff' }}
               />
             </Card>
           </Col>
-        ))}
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title="Pending Review"
+              value={jobs.filter(j => j.status === 'Submitted').length}
+              prefix={<CalendarOutlined />}
+              valueStyle={{ color: '#00072D' }}
+            />
+          </Card>
+          </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title="Under Review"
+              value={jobs.filter(j => j.status === 'Under Review').length}
+              prefix={<CalendarOutlined />}
+              valueStyle={{ color: '#722ed1' }}
+            />
+          </Card>
+          </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title="Quoted"
+              value={jobs.filter(j => j.status === 'Quoted').length}
+              prefix={<DollarOutlined />}
+              valueStyle={{ color: '#52c41a' }}
+            />
+      </Card>
+        </Col>
       </Row>
 
-      {/* Actions Bar */}
-      <Card style={{ marginBottom: '24px' }}>
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Space>
-              <Input
-                placeholder="Search jobs..."
-                prefix={<SearchOutlined />}
-                style={{ width: 300 }}
-              />
-              <Button icon={<FilterOutlined />}>
-                Filters
-              </Button>
-            </Space>
-          </Col>
-          <Col>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              size="large"
-              onClick={handleNewJob}
-            >
-              New Job
-            </Button>
-          </Col>
-        </Row>
-      </Card>
-
       {/* Jobs Table */}
-      <Card>
+      <Card title="All Jobs">
         <Table
           columns={columns}
           dataSource={jobs}
           pagination={{
-            total: jobs.length,
             pageSize: 10,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} jobs`,
+            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} jobs`
           }}
-          scroll={{ x: 1200 }}
+          locale={{
+            emptyText: (
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description={
+                  <div>
+                    <Text type="secondary" style={{ fontSize: '16px', marginBottom: '8px' }}>
+                      No jobs found
+                    </Text>
+                    <Text type="secondary" style={{ fontSize: '14px' }}>
+                      Get started by creating your first job
+                    </Text>
+                  </div>
+                }
+              >
+                <Button 
+                  type="primary" 
+                  icon={<PlusOutlined />}
+                  onClick={() => setIsModalVisible(true)}
+                  size="large"
+                >
+                  Create First Job
+                </Button>
+                </Empty>
+            )
+          }}
         />
       </Card>
 
-      {/* New Job Modal */}
+      {/* Create/Edit Job Modal */}
       <Modal
-        title="Create New Job"
-        visible={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
+        title={editingJob ? 'Edit Job' : 'New Job'}
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
         width={800}
-        okText="Create Job"
-        cancelText="Cancel"
       >
         <Form
           form={form}
           layout="vertical"
+          onFinish={handleSubmit}
           initialValues={{
-            priority: 'Medium',
-            fragile: false,
-            assignedTo: 'Unassigned',
+            port: 'Tema Port'
           }}
         >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="customerName"
-                label="Customer Name"
-                rules={[{ required: true, message: 'Please enter customer name!' }]}
+                name="clientName"
+                label="Client Name"
+                rules={[{ required: true, message: 'Please enter client name' }]}
               >
-                <Input placeholder="Enter customer name" />
+                <Input prefix={<UserOutlined />} placeholder="Enter client name" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="customerEmail"
-                label="Customer Email"
+                name="clientEmail"
+                label="Client Email"
                 rules={[
-                  { required: true, message: 'Please enter customer email!' },
-                  { type: 'email', message: 'Please enter a valid email!' }
+                  { required: true, message: 'Please enter client email' },
+                  { type: 'email', message: 'Please enter a valid email' }
                 ]}
               >
-                <Input placeholder="Enter customer email" />
+                <Input prefix={<UserOutlined />} placeholder="Enter client email" />
               </Form.Item>
             </Col>
           </Row>
@@ -641,23 +621,74 @@ const JobsPage = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="customerPhone"
-                label="Customer Phone"
-                rules={[{ required: true, message: 'Please enter customer phone!' }]}
+                name="clientPhone"
+                label="Client Phone"
+                rules={[{ required: true, message: 'Please enter client phone' }]}
               >
-                <Input placeholder="Enter customer phone" />
+                <Input placeholder="+233 XX XXX XXXX" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="priority"
-                label="Priority"
-                rules={[{ required: true, message: 'Please select priority!' }]}
+                name="commercialInvoice"
+                label="Commercial Invoice Number"
+                rules={[{ required: true, message: 'Please enter invoice number' }]}
               >
-                <Select>
-                  <Option value="Low">Low</Option>
-                  <Option value="Medium">Medium</Option>
-                  <Option value="High">High</Option>
+                <Input placeholder="Enter invoice number" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="ghanaCard"
+                label="Ghana Card Number"
+                rules={[{ required: true, message: 'Please enter Ghana Card number' }]}
+              >
+                <Input placeholder="GHA-XXXXXXXXX-X" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="tin"
+                label="TIN"
+                rules={[{ required: true, message: 'Please enter TIN' }]}
+              >
+                <Input placeholder="Enter TIN" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="goodsType"
+                label="Type of Goods"
+                rules={[{ required: true, message: 'Please select goods type' }]}
+              >
+                <Select placeholder="Select goods type">
+                  <Option value="Electronics">Electronics</Option>
+                  <Option value="Textiles">Textiles</Option>
+                  <Option value="Machinery">Machinery</Option>
+                  <Option value="Pharmaceuticals">Pharmaceuticals</Option>
+                  <Option value="Food & Beverages">Food & Beverages</Option>
+                  <Option value="Automotive">Automotive</Option>
+                  <Option value="Other">Other</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="port"
+                label="Port of Entry"
+                rules={[{ required: true, message: 'Please select port' }]}
+              >
+                <Select placeholder="Select port">
+                  <Option value="Tema Port">Tema Port</Option>
+                  <Option value="Kotoka Airport">Kotoka Airport</Option>
+                  <Option value="Takoradi Port">Takoradi Port</Option>
+                  <Option value="Kumasi Airport">Kumasi Airport</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -668,139 +699,87 @@ const JobsPage = () => {
               <Form.Item
                 name="assignedTo"
                 label="Assign To"
-                rules={[{ required: true, message: 'Please select a team member!' }]}
+                rules={[{ required: true, message: 'Please assign the job' }]}
               >
-                <Select placeholder="Select team member">
-                  <Option value="Driver A">Driver A</Option>
-                  <Option value="Driver B">Driver B</Option>
-                  <Option value="Driver C">Driver C</Option>
-                  <Option value="Warehouse Team">Warehouse Team</Option>
-                  <Option value="Delivery Agent A">Delivery Agent A</Option>
-                  <Option value="Delivery Agent B">Delivery Agent B</Option>
-                  <Option value="Unassigned">Unassigned</Option>
+                <Select placeholder="Select staff member">
+                  {staffMembers.map(member => (
+                    <Option key={member} value={member}>
+                      {member}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                name="pickupDate"
-                label="Pickup Date"
-                rules={[{ required: true, message: 'Please select pickup date!' }]}
-              >
-                <DatePicker style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-
           <Form.Item
-            name="pickupAddress"
-            label="Pickup Address"
-            rules={[{ required: true, message: 'Please enter pickup address!' }]}
-          >
-            <TextArea rows={3} placeholder="Enter pickup address" />
-          </Form.Item>
-
-          <Form.Item
-            name="deliveryAddress"
-            label="Delivery Address"
-            rules={[{ required: true, message: 'Please enter delivery address!' }]}
-          >
-            <TextArea rows={3} placeholder="Enter delivery address" />
-          </Form.Item>
-
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item
-                name="packageType"
-                label="Package Type"
-                rules={[{ required: true, message: 'Please select package type!' }]}
+                name="status"
+                label="Status"
+                rules={[{ required: true, message: 'Please select status' }]}
               >
-                <Select>
-                  <Option value="Document">Document</Option>
-                  <Option value="Parcel">Parcel</Option>
-                  <Option value="Fragile">Fragile</Option>
-                  <Option value="Heavy">Heavy</Option>
+                <Select placeholder="Select status">
+                  <Option value="Submitted">Submitted</Option>
+                  <Option value="Under Review">Under Review</Option>
+                  <Option value="Quoted">Quoted</Option>
+                  <Option value="Awaiting Client Payment">Awaiting Client Payment</Option>
+                  <Option value="Paid">Paid</Option>
+                  <Option value="Clearing">Clearing</Option>
+                  <Option value="Cleared">Cleared</Option>
+                  <Option value="Out for Delivery">Out for Delivery</Option>
+                  <Option value="Delivered">Delivered</Option>
+                  <Option value="Closed">Closed</Option>
+                  <Option value="On Hold">On Hold</Option>
+                  <Option value="Rejected">Rejected</Option>
                 </Select>
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item
-                name="weight"
-                label="Weight (kg)"
-                rules={[{ required: true, message: 'Please enter weight!' }]}
-              >
-                <InputNumber
-                  min={0.1}
-                  max={1000}
-                  step={0.1}
-                  style={{ width: '100%' }}
-                  placeholder="Enter weight"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item
-                name="value"
-                label="Declared Value (£)"
-                rules={[{ required: true, message: 'Please enter value!' }]}
-              >
-                <InputNumber
-                  min={0}
-                  step={0.01}
-                  style={{ width: '100%' }}
-                  placeholder="Enter value"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="deliveryDate"
-                label="Expected Delivery Date"
-                rules={[{ required: true, message: 'Please select delivery date!' }]}
-              >
-                <DatePicker style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Form.Item
-            name="description"
-            label="Package Description"
-          >
-            <TextArea rows={3} placeholder="Describe the package contents" />
           </Form.Item>
+            </Col>
+          </Row>
 
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="fragile"
-                label="Fragile Package"
-                valuePropName="checked"
+                name="estimatedValue"
+                label="Estimated Value (GHS)"
+                rules={[{ required: true, message: 'Please enter estimated value' }]}
               >
-                <Switch />
+                <Input type="number" placeholder="Enter value in GHS" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="insurance"
-                label="Insurance Required"
-                valuePropName="checked"
+                label="Documents"
+                name="documents"
               >
-                <Switch />
+                <Upload {...uploadProps}>
+                  <Button icon={<UploadOutlined />}>Upload Documents</Button>
+                </Upload>
               </Form.Item>
             </Col>
           </Row>
 
+
+
+          <Row gutter={16}>
+            <Col span={12}>
           <Form.Item
+                label="Documents"
             name="documents"
-            label="Upload Documents"
           >
-            <Upload>
-              <Button icon={<UploadOutlined />}>Upload Files</Button>
+                <Upload {...uploadProps}>
+                  <Button icon={<UploadOutlined />}>Upload Documents</Button>
             </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item style={{ marginTop: '24px', textAlign: 'right' }}>
+            <Space>
+              <Button onClick={() => setIsModalVisible(false)}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                {editingJob ? 'Update Job' : 'Create Job'}
+              </Button>
+            </Space>
           </Form.Item>
                                    </Form>
         </Modal>
@@ -808,62 +787,213 @@ const JobsPage = () => {
         {/* Status Update Modal */}
         <Modal
           title="Update Job Status"
-          visible={isStatusUpdateModalVisible}
-          onOk={handleStatusUpdateOk}
-          onCancel={handleStatusUpdateCancel}
-          width={600}
-          okText="Update Status"
-          cancelText="Cancel"
+        open={isStatusUpdateModalVisible}
+        onCancel={() => setIsStatusUpdateModalVisible(false)}
+        footer={null}
         >
           <Form
             form={statusUpdateForm}
             layout="vertical"
-            initialValues={{
-              status: selectedJob?.status || 'Pending',
-            }}
+          onFinish={handleStatusUpdate}
           >
             <Form.Item
               name="status"
               label="New Status"
-              rules={[{ required: true, message: 'Please select a new status!' }]}
-            >
-              <Select>
-                <Option value="Pending">Pending</Option>
-                <Option value="In Progress">In Progress</Option>
-                <Option value="In Transit">In Transit</Option>
-                <Option value="Completed">Completed</Option>
-                <Option value="Cancelled">Cancelled</Option>
+            rules={[{ required: true, message: 'Please select new status' }]}
+          >
+            <Select placeholder="Select new status">
+              <Option value="Submitted">Submitted</Option>
+              <Option value="Under Review">Under Review</Option>
+              <Option value="Quoted">Quoted</Option>
+              <Option value="Awaiting Client Payment">Awaiting Client Payment</Option>
+              <Option value="Paid">Paid</Option>
+              <Option value="Clearing">Clearing</Option>
+              <Option value="Cleared">Cleared</Option>
+              <Option value="Out for Delivery">Out for Delivery</Option>
+              <Option value="Delivered">Delivered</Option>
+              <Option value="Closed">Closed</Option>
+              <Option value="On Hold">On Hold</Option>
+              <Option value="Rejected">Rejected</Option>
               </Select>
             </Form.Item>
 
             <Form.Item
               name="comment"
               label="Comment"
-              rules={[{ required: true, message: 'Please add a comment for this status update!' }]}
-            >
-              <TextArea 
-                rows={4} 
-                placeholder="Describe what happened or why the status is being updated..."
-              />
+            rules={[{ required: true, message: 'Please add a comment for this status update' }]}
+          >
+            <TextArea rows={4} placeholder="Describe why the status is being updated..." />
+          </Form.Item>
+
+          <Form.Item style={{ marginTop: '24px', textAlign: 'right' }}>
+            <Space>
+              <Button onClick={() => setIsStatusUpdateModalVisible(false)}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Update Status
+              </Button>
+            </Space>
             </Form.Item>
           </Form>
         </Modal>
 
-       {/* Job Details Side Drawer */}
+        {/* Document Viewer Modal */}
+        <Modal
+          title={
+            <div>
+              <Title level={4} style={{ margin: 0 }}>Document Viewer</Title>
+              <Text type="secondary">{selectedDocument}</Text>
+            </div>
+          }
+          open={isDocumentViewerVisible}
+          onCancel={() => setIsDocumentViewerVisible(false)}
+          footer={null}
+          width={800}
+        >
+          {selectedDocument && (
+            <div>
+              {/* Document Header */}
+              <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+                <Col span={8}>
+                  <div style={{ textAlign: 'center' }}>
+                    {getDocumentIcon(selectedDocument)}
+                    <br />
+                    <Text strong style={{ fontSize: '16px' }}>
+                      {selectedDocument}
+                    </Text>
+                  </div>
+                </Col>
+                <Col span={8}>
+                  <div style={{ textAlign: 'center' }}>
+                    <Text strong>File Type</Text>
+                    <br />
+                    <Tag color="blue" style={{ marginTop: '8px' }}>
+                      {selectedDocument.split('.').pop()?.toUpperCase()}
+                    </Tag>
+                  </div>
+                </Col>
+                <Col span={8}>
+                  <div style={{ textAlign: 'center' }}>
+                    <Text strong>Job</Text>
+                    <br />
+                    <Text style={{ fontSize: '16px', color: '#1890ff' }}>
+                      {selectedJob?.trackingId}
+                    </Text>
+                  </div>
+                </Col>
+              </Row>
+
+              <Divider />
+
+              {/* Document Actions */}
+              <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+                <Col span={8}>
+                  <Button 
+                    type="primary" 
+                    icon={<EyeOutlined />} 
+                    block
+                    size="large"
+                  >
+                    Preview Document
+                  </Button>
+                </Col>
+                <Col span={8}>
+                  <Button 
+                    icon={<DownloadOutlined />} 
+                    block
+                    size="large"
+                  >
+                    Download
+                  </Button>
+                </Col>
+                <Col span={8}>
+                  <Button 
+                    icon={<ShareAltOutlined />} 
+                    block
+                    size="large"
+                  >
+                    Share
+                  </Button>
+                </Col>
+              </Row>
+
+              {/* Document Information */}
+              <Card size="small" title="Document Information">
+                <Descriptions column={1} size="small">
+                  <Descriptions.Item label="File Name">
+                    {selectedDocument}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="File Extension">
+                    <Tag color="blue">{selectedDocument.split('.').pop()?.toUpperCase()}</Tag>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Job Reference">
+                    {selectedJob?.trackingId}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Client">
+                    {selectedJob?.clientName}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Upload Date">
+                    {selectedJob?.submittedDate}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Document Type">
+                    {getDocumentTypeLabel(selectedDocument)}
+                  </Descriptions.Item>
+                </Descriptions>
+              </Card>
+
+              {/* Document Preview Placeholder */}
+              <Card size="small" title="Document Preview" style={{ marginTop: 16 }}>
+                <div style={{ 
+                  textAlign: 'center', 
+                  padding: '40px', 
+                  background: '#fafafa', 
+                  border: '2px dashed #d9d9d9',
+                  borderRadius: '8px'
+                }}>
+                  <FileTextOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+                  <br />
+                  <Text type="secondary">Document preview will be displayed here</Text>
+                  <br />
+                  <Text type="secondary" style={{ fontSize: '12px' }}>
+                    PDF, images, and other supported formats will show actual content
+                  </Text>
+                </div>
+              </Card>
+            </div>
+          )}
+        </Modal>
+
+      {/* Job Details Drawer */}
        <Drawer
-         title="Job Details"
+        title={
+          <div>
+            <Title level={4} style={{ margin: 0 }}>Job Details</Title>
+            <Text type="secondary">Tracking ID: {selectedJob?.trackingId}</Text>
+          </div>
+        }
          placement="right"
          onClose={() => setIsDetailsDrawerVisible(false)}
          open={isDetailsDrawerVisible}
          width={800}
-         extra={[
+                extra={
+          <Space>
+            <Button 
+              type="primary"
+              icon={<EditOutlined />}
+              onClick={() => {
+                statusUpdateForm.setFieldsValue({ status: selectedJob.status });
+                setIsStatusUpdateModalVisible(true);
+              }}
+            >
+              Update Status
+            </Button>
            <Dropdown
-             key="actions"
              menu={{
                items: [
                  {
                    key: 'edit',
-                   label: 'Edit',
+                    label: 'Edit Job',
                    icon: <EditOutlined />,
                    onClick: () => {
                      setIsDetailsDrawerVisible(false);
@@ -871,216 +1001,301 @@ const JobsPage = () => {
                    },
                  },
                  {
-                   key: 'updateStatus',
-                   label: 'Update Status',
-                   icon: <SettingOutlined />,
-                   onClick: handleStatusUpdate,
+                    key: 'delete',
+                    label: 'Delete Job',
+                    icon: <DeleteOutlined />,
+                    danger: true,
+                    onClick: () => {
+                      setIsDetailsDrawerVisible(false);
+                      handleDeleteJob(selectedJob);
+                    },
                  },
                ],
              }}
              placement="bottomRight"
              arrow
            >
-             <Button type="primary">
-               Actions <DownOutlined />
-             </Button>
-           </Dropdown>,
-         ]}
+              <Button 
+                type="text" 
+                icon={<MoreOutlined />}
+                size="large"
+              />
+            </Dropdown>
+          </Space>
+        }
        >
          {selectedJob && (
-           <div>
-             {/* Job Status Overview */}
-             <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-               <Col span={8}>
-                 <div style={{ textAlign: 'center' }}>
-                   <Title level={3} style={{ marginBottom: '8px' }}>
-                     {selectedJob.jobId}
-                   </Title>
-                   <Tag color={getStatusColor(selectedJob.status)} size="large">
-                     {selectedJob.status}
-                   </Tag>
-                 </div>
-               </Col>
-               <Col span={8}>
-                 <div style={{ textAlign: 'center' }}>
-                   <Text strong>Progress</Text>
-                   <br />
-                   <Progress 
-                     type="circle" 
-                     percent={selectedJob.progress} 
-                     size={80}
-                     strokeColor={selectedJob.progress === 100 ? '#52c41a' : '#1890ff'}
-                   />
-                 </div>
-               </Col>
-               <Col span={8}>
-                 <div style={{ textAlign: 'center' }}>
-                   <Text strong>ETA</Text>
-                   <br />
-                   <Text style={{ fontSize: '18px', color: '#1890ff' }}>
-                     {selectedJob.eta}
-                   </Text>
-                 </div>
-               </Col>
-             </Row>
-
-             <Divider />
-
-             {/* Tabs for Timeline, Activities, and Details */}
-             <Tabs
-               defaultActiveKey="timeline"
-               items={[
-                 {
-                   key: 'timeline',
-                   label: 'Timeline',
-                   children: (
-                     <Card title="Job Timeline" size="small">
+          <Tabs defaultActiveKey="details" style={{ marginTop: '16px' }}>
+            <TabPane 
+              tab={
+                <span>
+                  <ClockCircleOutlined />
+                  Timeline
+                </span>
+              } 
+              key="timeline"
+            >
+              <Card title="Status Timeline" size="small">
+                {selectedJob.statusHistory && selectedJob.statusHistory.length > 0 ? (
                        <Timeline>
-                         {selectedJob.timeline.map((item, index) => (
+                    {selectedJob.statusHistory.map((entry, index) => (
                            <Timeline.Item 
                              key={index} 
-                             dot={item.icon}
-                             color={item.status === 'completed' ? 'green' : item.status === 'in-progress' ? 'blue' : 'gray'}
+                        color={getStatusColor(entry.status)}
+                        dot={<UserOutlined style={{ color: getStatusColor(entry.status) }} />}
                            >
                              <div>
-                               <Text strong>{item.event}</Text>
+                          <Text strong>{entry.status}</Text>
                                <br />
-                               <Text type="secondary">{item.location}</Text>
+                          <Text type="secondary">{entry.comment}</Text>
                                <br />
                                <Text type="secondary" style={{ fontSize: '12px' }}>
-                                 {item.time}
+                            {entry.date} - Updated by {entry.updatedBy}
                                </Text>
                              </div>
                            </Timeline.Item>
                          ))}
                        </Timeline>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '20px' }}>
+                    <ClockCircleOutlined style={{ fontSize: '24px', color: '#d9d9d9', marginBottom: '8px' }} />
+                    <br />
+                    <Text type="secondary">No status updates yet</Text>
+                  </div>
+                )}
                      </Card>
-                   ),
-                 },
-                 {
-                   key: 'activities',
-                   label: 'Activities',
-                   children: (
+            </TabPane>
+
+            <TabPane 
+              tab={
+                <span>
+                  <UserOutlined />
+                  Activities
+                </span>
+              } 
+              key="activities"
+            >
                      <Card title="User Activities" size="small">
                        <Timeline>
-                         {selectedJob.activities.map((activity, index) => (
-                           <Timeline.Item 
-                             key={index}
-                             dot={<UserOutlined style={{ color: '#1890ff' }} />}
-                           >
-                             <div>
-                               <Text strong>{activity.user}</Text>
-                               <Text> {activity.action}</Text>
-                               <br />
-                               <Text type="secondary">{activity.details}</Text>
-                               <br />
-                               <Text type="secondary" style={{ fontSize: '12px' }}>
-                                 {activity.time}
-                               </Text>
-                             </div>
-                           </Timeline.Item>
-                         ))}
+                                             <Timeline.Item 
+                    color="blue"
+                    dot={<UserOutlined style={{ color: '#1890ff' }} />}
+                  >
+                    <div>
+                      <Text strong>Job Created</Text>
+                      <br />
+                      <Text type="secondary">Job request submitted by {selectedJob.createdBy}</Text>
+                      <br />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>
+                        {selectedJob.submittedDate} - {selectedJob.createdBy}
+                      </Text>
+                    </div>
+                  </Timeline.Item>
+                  <Timeline.Item 
+                    color="green"
+                    dot={<CheckCircleOutlined style={{ color: '#52c41a' }} />}
+                  >
+                    <div>
+                      <Text strong>Assigned to Staff</Text>
+                      <br />
+                      <Text type="secondary">Job assigned to {selectedJob.assignedTo}</Text>
+                      <br />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>
+                        {selectedJob.submittedDate} - Admin
+                      </Text>
+                    </div>
+                  </Timeline.Item>
+                  <Timeline.Item 
+                    color="blue"
+                    dot={<ExclamationCircleOutlined style={{ color: '#1890ff' }} />}
+                  >
+                    <div>
+                      <Text strong>Documents Reviewed</Text>
+                      <br />
+                      <Text type="secondary">All required documents verified</Text>
+                      <br />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>
+                        {selectedJob.submittedDate} - Staff 2
+                      </Text>
+                    </div>
+                  </Timeline.Item>
                        </Timeline>
                      </Card>
-                   ),
-                 },
-                 {
-                   key: 'details',
-                   label: 'Details',
-                   children: (
-                     <div>
-                                               {/* Job Information */}
-                        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-                          <Col span={24}>
-                            <Card size="small" title="Customer Information">
-                              <Descriptions column={1} size="small">
-                                <Descriptions.Item label="Name">
-                                  <Space>
-                                    <UserOutlined />
-                                    {selectedJob.customer}
-                                  </Space>
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Email">
-                                  {selectedJob.customerEmail}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Phone">
-                                  {selectedJob.customerPhone}
-                                </Descriptions.Item>
-                              </Descriptions>
-                            </Card>
-                          </Col>
-                        </Row>
+            </TabPane>
 
-                        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-                          <Col span={24}>
-                            <Card size="small" title="Package Details">
-                              <Descriptions column={1} size="small">
-                                <Descriptions.Item label="Type">
-                                  {selectedJob.packageType}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Weight">
-                                  {selectedJob.weight}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Value">
-                                  <Space>
-                                    <DollarOutlined />
-                                    £{selectedJob.value.toLocaleString()}
-                                  </Space>
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Priority">
-                                  <Tag color={getPriorityColor(selectedJob.priority)}>
-                                    {selectedJob.priority}
+            <TabPane 
+              tab={
+                <span>
+                  <FileTextOutlined />
+                  Details
+                </span>
+              } 
+              key="details"
+            >
+              {/* Job Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                <div>
+                  <Title level={3}>{selectedJob.trackingId}</Title>
+                  <Tag color={getStatusColor(selectedJob.status)} size="large">
+                    {selectedJob.status}
                                   </Tag>
-                                </Descriptions.Item>
-                              </Descriptions>
-                            </Card>
-                          </Col>
-                        </Row>
+                </div>
+              </div>
 
-                       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-                         <Col span={24}>
-                           <Card size="small" title="Addresses">
-                             <Descriptions column={1} size="small">
-                               <Descriptions.Item label="Pickup Address">
-                                 <Space>
-                                   <EnvironmentOutlined />
-                                   {selectedJob.pickupAddress}
-                                 </Space>
-                               </Descriptions.Item>
-                               <Descriptions.Item label="Delivery Address">
-                                 <Space>
-                                   <EnvironmentOutlined />
-                                   {selectedJob.deliveryAddress}
-                                 </Space>
-                               </Descriptions.Item>
-                             </Descriptions>
-                           </Card>
-                         </Col>
-                       </Row>
+              {/* Job Overview */}
+              <div style={{ 
+                marginBottom: '24px', 
+                border: '1px solid #d9d9d9', 
+                borderRadius: '8px', 
+                padding: '20px',
+                backgroundColor: '#ffffff'
+              }}>
+                <Title level={4} style={{ 
+                  marginBottom: '20px', 
+                  borderBottom: '1px solid #d9d9d9',
+                  paddingBottom: '8px'
+                }}>
+                  Job Overview
+                </Title>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Created By:</div>
+                  <div>{selectedJob.createdBy}</div>
+                </div>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Assigned To:</div>
+                  <div>{selectedJob.assignedTo}</div>
+                </div>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Submitted Date:</div>
+                  <div>{selectedJob.submittedDate}</div>
+                </div>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Port of Entry:</div>
+                  <div>{selectedJob.port}</div>
+                </div>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Estimated Value:</div>
+                  <div>GHS {selectedJob.estimatedValue.toLocaleString()}</div>
+                </div>
+              </div>
 
-                       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-                         <Col span={24}>
-                           <Card size="small" title="Job Information">
-                             <Descriptions column={1} size="small">
-                               <Descriptions.Item label="Assigned To">
-                                 {selectedJob.assignedTo}
-                               </Descriptions.Item>
-                               <Descriptions.Item label="Created Date">
-                                 {selectedJob.createdAt}
-                               </Descriptions.Item>
-                               <Descriptions.Item label="Expected Delivery">
-                                 {selectedJob.eta}
-                               </Descriptions.Item>
-                             </Descriptions>
-                           </Card>
-                         </Col>
-                       </Row>
+              {/* Client Information */}
+              <div style={{ 
+                marginBottom: '24px', 
+                border: '1px solid #d9d9d9', 
+                borderRadius: '8px', 
+                padding: '20px',
+                backgroundColor: '#ffffff'
+              }}>
+                <Title level={4} style={{ 
+                  marginBottom: '20px', 
+                  borderBottom: '1px solid #d9d9d9',
+                  paddingBottom: '8px'
+                }}>
+                  Client Information
+                </Title>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Name:</div>
+                  <div>{selectedJob.clientName}</div>
                      </div>
-                   ),
-                 },
-               ]}
-             />
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Email:</div>
+                  <div>{selectedJob.clientEmail}</div>
+                </div>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Phone:</div>
+                  <div>{selectedJob.clientPhone}</div>
+                </div>
+              </div>
+
+              {/* Job Information */}
+              <div style={{ 
+                marginBottom: '24px', 
+                border: '1px solid #d9d9d9', 
+                borderRadius: '8px', 
+                padding: '20px',
+                backgroundColor: '#ffffff'
+              }}>
+                <Title level={4} style={{ 
+                  marginBottom: '20px', 
+                  borderBottom: '1px solid #d9d9d9',
+                  paddingBottom: '8px'
+                }}>
+                  Job Information
+                </Title>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Commercial Invoice:</div>
+                  <div>{selectedJob.commercialInvoice}</div>
+                </div>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Ghana Card:</div>
+                  <div>{selectedJob.ghanaCard}</div>
+                </div>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>TIN:</div>
+                  <div>{selectedJob.tin}</div>
+                </div>
+                <div style={{ marginBottom: '16px', display: 'flex' }}>
+                  <div style={{ width: '140px', fontWeight: 'bold' }}>Goods Type:</div>
+                  <div><Tag color="blue">{selectedJob.goodsType}</Tag></div>
+                </div>
+              </div>
+
+              {/* Documents */}
+              <div style={{ 
+                marginBottom: '24px', 
+                border: '1px solid #d9d9d9', 
+                borderRadius: '8px', 
+                padding: '20px',
+                backgroundColor: '#ffffff'
+              }}>
+                <Title level={4} style={{ 
+                  marginBottom: '20px', 
+                  borderBottom: '1px solid #d9d9d9',
+                  paddingBottom: '8px'
+                }}>
+                  Attached Documents
+                </Title>
+                {selectedJob.documents && selectedJob.documents.length > 0 ? (
+                  <div>
+                    {selectedJob.documents.map((doc, index) => (
+                      <div key={index} style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        padding: '8px 0',
+                        borderBottom: index < selectedJob.documents.length - 1 ? '1px solid #f0f0f0' : 'none'
+                      }}>
+                        <div style={{ marginRight: '8px' }}>
+                          {getDocumentIcon(doc)}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <Text strong>{doc}</Text>
+                          <br />
+                          <Text type="secondary" style={{ fontSize: '12px' }}>
+                            Document attached
+                          </Text>
+                        </div>
+                        <Button 
+                          type="text" 
+                          size="small"
+                          icon={<EyeOutlined />}
+                          onClick={() => handleViewDocument(doc)}
+                        >
+                          View
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '20px' }}>
+                    <FileTextOutlined style={{ fontSize: '24px', color: '#d9d9d9', marginBottom: '8px' }} />
+                    <br />
+                    <Text type="secondary">No documents attached</Text>
            </div>
+                )}
+              </div>
+            </TabPane>
+          </Tabs>
          )}
        </Drawer>
      </div>

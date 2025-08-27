@@ -8,7 +8,7 @@ import './App.css';
 import MainLayout from './components/layout/MainLayout';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
-import EnquiriesPage from './pages/EnquiriesPage';
+import JobsPage from './pages/JobsPage';
 import ClientsPage from './pages/ClientsPage';
 import ReportsPage from './pages/ReportsPage';
 import ShipmentTrackingPage from './pages/ShipmentTrackingPage';
@@ -16,7 +16,7 @@ import ShipmentsPage from './pages/ShipmentsPage';
 import InvoicesPage from './pages/InvoicesPage';
 import PaymentsPage from './pages/PaymentsPage';
 import DutyCalculatorPage from './pages/DutyCalculatorPage';
-import DeliveryPage from './pages/DeliveryPage';
+
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import PublicTrackingPage from './pages/PublicTrackingPage';
 
@@ -32,7 +32,7 @@ function App() {
       theme={{
         algorithm: defaultAlgorithm,
         token: {
-          colorPrimary: '#ff9800',
+          colorPrimary: '#2FA2EE',
           colorSuccess: '#4caf50',
           colorWarning: '#ff5722',
           colorError: '#f44336',
@@ -57,14 +57,14 @@ function App() {
               }>
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<DashboardPage />} />
-                <Route path="enquiries" element={<EnquiriesPage />} />
+                <Route path="enquiries" element={<JobsPage />} />
                 <Route path="shipments" element={<ShipmentsPage />} />
                 <Route path="clients" element={<ClientsPage />} />
                 <Route path="invoices" element={<InvoicesPage />} />
                 <Route path="payments" element={<PaymentsPage />} />
                 <Route path="duty-calculator" element={<DutyCalculatorPage />} />
                 <Route path="tracking" element={<ShipmentTrackingPage />} />
-                <Route path="delivery" element={<DeliveryPage />} />
+
                 <Route path="reports" element={<ReportsPage />} />
                 <Route path="admin" element={<AdminDashboardPage />} />
               </Route>
